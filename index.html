@@ -558,7 +558,13 @@
                 </div>
             `).join('');
 
-            // Add click handlers
+            // Re-attach click handlers after re-render
+            attachExpertHandlers();
+        }
+
+        // Attach expert card click handlers
+        function attachExpertHandlers() {
+            const container = document.getElementById('experts-list');
             container.querySelectorAll('.expert-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const key = card.dataset.key;
@@ -715,6 +721,25 @@
             initTelegram();
             initSupabase();
 
+            // Render experts first (so DOM elements exist)
+            renderExperts();
+
+            // Setup expert handlers (always, regardless of userId)
+            attachExpertHandlers();
+
+            // Setup navigation (always, regardless of userId)
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    switchScreen(item.dataset.screen);
+                });
+            });
+
+            // Setup topup button (always, regardless of userId)
+            document.getElementById('btn-topup').addEventListener('click', () => {
+                // Open invoice - will be implemented when bot is ready
+                tg.showAlert('Функция пополнения будет доступна скоро');
+            });
+
             // Check if opened in Telegram
             if (!userId) {
                 showErrorScreen();
@@ -737,19 +762,6 @@
             // Update UI
             updateHomeScreen();
             updateProfileScreen();
-
-            // Setup navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    switchScreen(item.dataset.screen);
-                });
-            });
-
-            // Setup topup button
-            document.getElementById('btn-topup').addEventListener('click', () => {
-                // Open invoice - will be implemented when bot is ready
-                tg.showAlert('Функция пополнения будет доступна скоро');
-            });
         }
 
         // Start
