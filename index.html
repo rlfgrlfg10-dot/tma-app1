@@ -437,10 +437,25 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
+
+        .warning-banner {
+            background: #FFD60A;
+            color: #000000;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Warning Banner -->
+        <div id="warning-banner" class="warning-banner hidden">
+            ⚠️ Открой в мобильном Telegram для полного функционала
+        </div>
+
         <!-- Screen: Agent -->
         <div id="screen-agent" class="screen active">
             <div class="card">
@@ -581,7 +596,7 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        const userId = tg.initDataUnsafe?.user?.id;
+        const userId = tg.initDataUnsafe?.user?.id || tg.initData?.user?.id;
         const userName = tg.initDataUnsafe?.user?.first_name || 'Привет';
         let supabase = null;
         let supabaseUserId = null;
@@ -637,7 +652,15 @@
 
         // Load user data
         async function loadUserData() {
-            if (!supabase || !userId) return;
+            console.log('userId from tg:', userId);
+            console.log('initDataUnsafe:', tg.initDataUnsafe);
+
+            if (!supabase || !userId) {
+                console.log('userId is undefined, using test data');
+                balance = 79;
+                document.getElementById('warning-banner').classList.remove('hidden');
+                return;
+            }
 
             try {
                 const { data, error } = await supabase
@@ -705,7 +728,7 @@
                     const key = card.dataset.key;
                     activeExpert = key;
                     localStorage.setItem('activeExpert', key);
-                    tg.sendData(`expert:${key}`);
+                    tg.openTelegramLink(`https://t.me/tmaTESTTEST_bot?start=expert_${key}`);
                 });
             });
         }
@@ -742,7 +765,7 @@
             container.querySelectorAll('.conversation-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const key = item.dataset.key;
-                    tg.sendData(`open_expert:${key}`);
+                    tg.openTelegramLink(`https://t.me/tmaTESTTEST_bot?start=expert_${key}`);
                 });
             });
         }
@@ -790,13 +813,13 @@
 
             // Setup topup buttons
             document.getElementById('btn-topup').addEventListener('click', () => {
-                tg.sendData('action:topup');
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
             });
             document.getElementById('btn-topup-profile').addEventListener('click', () => {
-                tg.sendData('action:topup');
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
             });
             document.getElementById('topup-link').addEventListener('click', () => {
-                tg.sendData('action:topup');
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
             });
 
             // Setup earn buttons
@@ -817,8 +840,11 @@
 
             // Setup clear history
             document.getElementById('btn-clear-history').addEventListener('click', () => {
-                tg.sendData('action:clear_history');
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=clear');
             });
+
+            // Render experts immediately (always, regardless of data loading)
+            renderExperts();
 
             // Check if opened in Telegram
             if (!userId) {
@@ -839,7 +865,6 @@
             // Load data
             await loadUserData();
             updateBalanceElements();
-            renderExperts();
             await renderConversations();
 
             // Set profile name
