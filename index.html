@@ -14,11 +14,11 @@
         }
 
         body {
-            font-family: -apple-system, SF Pro, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, sans-serif;
             background-color: #F2F2F7;
             color: #000000;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 70px;
         }
 
         .container {
@@ -27,40 +27,45 @@
             margin: 0 auto;
         }
 
-        .header {
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 700;
-        }
-
         .card {
             background: #FFFFFF;
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        .balance-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+        .card-dark {
+            background: #1C1C1E;
+            color: #FFFFFF;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+
+        .greeting-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .greeting-subtitle {
+            font-size: 14px;
+            color: #8E8E93;
         }
 
         .balance-amount {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 700;
-            color: #007AFF;
             margin-bottom: 4px;
         }
 
         .balance-label {
             font-size: 14px;
-            color: #8E8E93;
+            opacity: 0.7;
             margin-bottom: 16px;
         }
 
@@ -73,21 +78,16 @@
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.8;
+            width: 100%;
         }
 
         .btn:active {
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 12px;
+        .btn-disabled {
+            background: #C7C7CC;
+            color: #8E8E93;
         }
 
         .experts-scroll {
@@ -106,9 +106,13 @@
         .expert-card {
             background: #FFFFFF;
             border-radius: 16px;
-            padding: 16px;
+            padding: 12px;
             min-width: 100px;
-            text-align: center;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             border: 2px solid transparent;
             transition: border-color 0.2s;
@@ -120,37 +124,37 @@
         }
 
         .expert-emoji {
-            font-size: 32px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 4px;
         }
 
         .expert-name {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
         }
 
         .conversation-item {
             background: #FFFFFF;
             border-radius: 12px;
-            padding: 16px;
+            padding: 12px;
             margin-bottom: 8px;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .conversation-item:hover {
-            background-color: #F8F8F8;
         }
 
         .conversation-header {
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .conversation-emoji {
-            font-size: 20px;
+            font-size: 18px;
+        }
+
+        .conversation-name {
+            font-weight: 500;
+            font-size: 15px;
         }
 
         .conversation-date {
@@ -160,77 +164,161 @@
         }
 
         .conversation-preview {
-            font-size: 14px;
-            color: #3C3C43;
+            font-size: 13px;
+            color: #8E8E93;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 20px;
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: #8E8E93;
+            font-size: 14px;
         }
 
-        .profile-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #007AFF, #5856D6);
+        .generation-card {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: #FFFFFF;
+            text-align: center;
         }
 
-        .profile-info h2 {
+        .generation-emoji {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .generation-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .generation-subtitle {
+            font-size: 13px;
+            color: #8E8E93;
+            margin-bottom: 12px;
+        }
+
+        .balance-compact {
+            font-size: 14px;
+            color: #8E8E93;
+            margin-bottom: 16px;
+        }
+
+        .balance-compact span {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .balance-link {
+            color: #007AFF;
+            cursor: pointer;
+        }
+
+        .profile-name {
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 4px;
         }
 
         .profile-balance {
-            font-size: 16px;
+            font-size: 15px;
             color: #8E8E93;
+            margin-bottom: 12px;
         }
 
-        .transaction-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .transaction-table th {
-            text-align: left;
-            font-size: 12px;
-            color: #8E8E93;
-            font-weight: 500;
-            padding: 8px 0;
-            border-bottom: 1px solid #E5E5EA;
-        }
-
-        .transaction-table td {
+        .earn-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             padding: 12px 0;
-            font-size: 14px;
             border-bottom: 1px solid #E5E5EA;
         }
 
-        .transaction-table tr:last-child td {
+        .earn-row:last-child {
             border-bottom: none;
         }
 
-        .transaction-type {
-            font-weight: 500;
+        .earn-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .transaction-type.plus {
+        .earn-emoji {
+            font-size: 20px;
+        }
+
+        .earn-text {
+            font-size: 15px;
+        }
+
+        .earn-bonus {
+            font-size: 14px;
             color: #34C759;
+            font-weight: 600;
+            margin-right: 8px;
         }
 
-        .transaction-type.minus {
-            color: #FF3B30;
+        .earn-btn {
+            background: #007AFF;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .earn-btn:active {
+            opacity: 0.7;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E5EA;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .setting-emoji {
+            font-size: 20px;
+        }
+
+        .setting-text {
+            font-size: 15px;
+        }
+
+        .setting-value {
+            font-size: 14px;
+            color: #8E8E93;
+        }
+
+        .setting-btn {
+            background: transparent;
+            color: #007AFF;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .setting-btn:active {
+            opacity: 0.7;
         }
 
         .bottom-nav {
@@ -296,23 +384,24 @@
 
         .skeleton-text {
             height: 16px;
+            width: 100px;
             margin-bottom: 8px;
         }
 
+        .skeleton-balance {
+            height: 36px;
+            width: 120px;
+            margin: 0 auto 8px;
+        }
+
         .skeleton-card {
-            height: 80px;
-            margin-bottom: 16px;
+            height: 60px;
+            margin-bottom: 8px;
         }
 
-        .skeleton-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-        }
-
-        .error-message {
+        .error-screen {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: #8E8E93;
         }
 
@@ -321,33 +410,47 @@
             margin-bottom: 16px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #8E8E93;
-        }
-
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
         .hidden {
             display: none !important;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 1000;
+            animation: fadeIn 0.3s, fadeOut 0.3s 1.7s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Screen 1: Home -->
-        <div id="screen-home" class="screen active">
-            <div class="header">
-                <h1 id="greeting">Привет! 👋</h1>
+        <!-- Screen: Agent -->
+        <div id="screen-agent" class="screen active">
+            <div class="card">
+                <div class="greeting-text" id="greeting">Привет! 👋</div>
+                <div class="greeting-subtitle">Чем могу помочь сегодня?</div>
             </div>
 
-            <div class="card balance-card">
+            <div class="card card-dark">
                 <div class="balance-amount" id="balance-amount">—</div>
-                <div class="balance-label">токенов</div>
+                <div class="balance-label">токенов на счёте</div>
                 <button class="btn" id="btn-topup">Пополнить</button>
             </div>
 
@@ -356,60 +459,112 @@
                 <!-- Experts will be rendered here -->
             </div>
 
-            <div class="section-title" style="margin-top: 24px;">Последние диалоги</div>
+            <div class="section-title">Последние диалоги</div>
             <div id="conversations-list">
                 <!-- Conversations will be rendered here -->
             </div>
         </div>
 
-        <!-- Screen 2: Profile -->
+        <!-- Screen: Generation -->
+        <div id="screen-generation" class="screen">
+            <div class="balance-compact">
+                <span id="balance-compact">—</span> токенов · <span class="balance-link" id="topup-link">Пополнить</span>
+            </div>
+
+            <div class="card generation-card">
+                <div class="generation-emoji">🖼</div>
+                <div class="generation-title">Создать фото</div>
+                <div class="generation-subtitle">Скоро · ~30 токенов</div>
+                <button class="btn btn-disabled">Недоступно</button>
+            </div>
+
+            <div class="card generation-card">
+                <div class="generation-emoji">🎬</div>
+                <div class="generation-title">Создать видео</div>
+                <div class="generation-subtitle">Скоро · ~150 токенов</div>
+                <button class="btn btn-disabled">Недоступно</button>
+            </div>
+        </div>
+
+        <!-- Screen: Profile -->
         <div id="screen-profile" class="screen">
-            <div class="header">
-                <h1>Профиль</h1>
+            <div class="card">
+                <div class="profile-name" id="profile-name">—</div>
+                <div class="profile-balance" id="profile-balance">— токенов</div>
+                <button class="btn" id="btn-topup-profile">Пополнить</button>
             </div>
 
             <div class="card">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profile-avatar">?</div>
-                    <div class="profile-info">
-                        <h2 id="profile-name">Загрузка...</h2>
-                        <div class="profile-balance" id="profile-balance">— токенов</div>
+                <div class="section-title" style="margin-top: 0;">Заработать токены</div>
+                <div class="earn-row">
+                    <div class="earn-left">
+                        <span class="earn-emoji">👥</span>
+                        <span class="earn-text">Пригласить друга</span>
+                    </div>
+                    <div>
+                        <span class="earn-bonus">+30 токенов</span>
+                        <button class="earn-btn" id="btn-copy-ref">Скопировать ссылку</button>
+                    </div>
+                </div>
+                <div class="earn-row">
+                    <div class="earn-left">
+                        <span class="earn-emoji">📢</span>
+                        <span class="earn-text">Подписаться на канал</span>
+                    </div>
+                    <div>
+                        <span class="earn-bonus">+30 токенов</span>
+                        <button class="earn-btn" id="btn-subscribe">Подписаться</button>
+                    </div>
+                </div>
+                <div class="earn-row">
+                    <div class="earn-left">
+                        <span class="earn-emoji">💬</span>
+                        <span class="earn-text">Добавить в чат</span>
+                    </div>
+                    <div>
+                        <span class="earn-bonus">+30 токенов</span>
+                        <button class="earn-btn" id="btn-add-chat">Добавить</button>
                     </div>
                 </div>
             </div>
 
-            <div class="section-title">Транзакции</div>
             <div class="card">
-                <table class="transaction-table">
-                    <thead>
-                        <tr>
-                            <th>Тип</th>
-                            <th>Модель</th>
-                            <th>Сумма</th>
-                            <th>Дата</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transactions-list">
-                        <!-- Transactions will be rendered here -->
-                    </tbody>
-                </table>
+                <div class="section-title" style="margin-top: 0;">Настройки</div>
+                <div class="setting-row">
+                    <div class="setting-left">
+                        <span class="setting-emoji">🤖</span>
+                        <span class="setting-text">Активная модель</span>
+                    </div>
+                    <span class="setting-value" id="active-model">Llama (бесплатно)</span>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-left">
+                        <span class="setting-emoji">🗑</span>
+                        <span class="setting-text">Очистить историю</span>
+                    </div>
+                    <button class="setting-btn" id="btn-clear-history">Очистить</button>
+                </div>
             </div>
         </div>
 
         <!-- Error Screen -->
         <div id="screen-error" class="screen">
-            <div class="error-message">
+            <div class="error-screen">
                 <div class="error-icon">📱</div>
-                <p>Открой через Telegram бот</p>
+                <p>Открой через Telegram бот @tmaTESTTEST_bot</p>
             </div>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav" id="bottom-nav">
-        <div class="nav-item active" data-screen="home">
-            <div class="nav-icon">🏠</div>
-            <div class="nav-label">Главная</div>
+        <div class="nav-item active" data-screen="agent">
+            <div class="nav-icon">🤖</div>
+            <div class="nav-label">Агент</div>
+        </div>
+        <div class="nav-item" data-screen="generation">
+            <div class="nav-icon">✨</div>
+            <div class="nav-label">Генерация</div>
         </div>
         <div class="nav-item" data-screen="profile">
             <div class="nav-icon">👤</div>
@@ -424,35 +579,27 @@
 
         // Initialize
         const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
         const userId = tg.initDataUnsafe?.user?.id;
+        const userName = tg.initDataUnsafe?.user?.first_name || 'Привет';
         let supabase = null;
+        let supabaseUserId = null;
+        let balance = 0;
 
         // Experts list
         const experts = [
-            { key: "default", emoji: "🦙", name: "Лама" },
-            { key: "marketer", emoji: "🎯", name: "Маркетолог" },
-            { key: "psychologist", emoji: "🧠", name: "Психолог" },
-            { key: "fitness", emoji: "💪", name: "Фитнес-тренер" },
-            { key: "editor", emoji: "✍️", name: "Редактор" },
-            { key: "programmer", emoji: "💻", name: "Программист" }
+            { key: 'default', emoji: '🦙', name: 'Лама' },
+            { key: 'marketer', emoji: '🎯', name: 'Маркетолог' },
+            { key: 'psychologist', emoji: '🧠', name: 'Психолог' },
+            { key: 'fitness', emoji: '💪', name: 'Фитнес' },
+            { key: 'editor', emoji: '✍️', name: 'Редактор' },
+            { key: 'programmer', emoji: '💻', name: 'Код' }
         ];
 
         // State
-        let currentScreen = 'home';
         let activeExpert = localStorage.getItem('activeExpert') || 'default';
-        let userData = null;
-        let conversations = [];
-        let transactions = [];
-
-        // Initialize Telegram WebApp
-        function initTelegram() {
-            tg.ready();
-            tg.expand();
-            
-            // Set theme
-            document.body.style.backgroundColor = tg.backgroundColor || '#F2F2F7';
-            document.body.style.color = tg.textColor || '#000000';
-        }
+        let activeModel = localStorage.getItem('activeModel') || 'Llama (бесплатно)';
 
         // Initialize Supabase
         function initSupabase() {
@@ -460,19 +607,6 @@
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             } catch (e) {
                 console.error('Supabase init error:', e);
-            }
-        }
-
-        // Show skeleton
-        function showSkeleton(element, type) {
-            if (type === 'balance') {
-                element.innerHTML = '<div class="skeleton skeleton-text" style="height: 48px; width: 100px; margin: 0 auto;"></div>';
-            } else if (type === 'card') {
-                element.innerHTML = '<div class="skeleton skeleton-card"></div>';
-            } else if (type === 'text') {
-                element.innerHTML = '<div class="skeleton skeleton-text"></div>';
-            } else if (type === 'avatar') {
-                element.innerHTML = '<div class="skeleton skeleton-avatar"></div>';
             }
         }
 
@@ -490,6 +624,17 @@
             return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
         }
 
+        // Show skeleton
+        function showSkeleton(element, type) {
+            if (type === 'balance') {
+                element.innerHTML = '<div class="skeleton skeleton-balance"></div>';
+            } else if (type === 'text') {
+                element.innerHTML = '<div class="skeleton skeleton-text"></div>';
+            } else if (type === 'card') {
+                element.innerHTML = '<div class="skeleton skeleton-card"></div>';
+            }
+        }
+
         // Load user data
         async function loadUserData() {
             if (!supabase || !userId) return;
@@ -497,55 +642,51 @@
             try {
                 const { data, error } = await supabase
                     .from('users')
-                    .select('*')
+                    .select('id, balance_tokens')
                     .eq('telegram_id', userId)
                     .single();
 
                 if (error) throw error;
-                userData = data;
+                
+                if (data) {
+                    supabaseUserId = data.id;
+                    balance = data.balance_tokens || 0;
+                }
             } catch (e) {
                 console.error('Error loading user:', e);
+                balance = 0;
             }
         }
 
         // Load conversations
         async function loadConversations() {
-            if (!supabase || !userId) return;
+            if (!supabase || !supabaseUserId) return [];
 
             try {
                 const { data, error } = await supabase
                     .from('conversations')
-                    .select('*')
-                    .eq('user_id', userId)
+                    .select('persona_key, updated_at, messages')
+                    .eq('user_id', supabaseUserId)
                     .order('updated_at', { ascending: false })
                     .limit(5);
 
                 if (error) throw error;
-                conversations = data || [];
+                return data || [];
             } catch (e) {
                 console.error('Error loading conversations:', e);
-                conversations = [];
+                return [];
             }
         }
 
-        // Load transactions
-        async function loadTransactions() {
-            if (!supabase || !userId) return;
+        // Update balance elements
+        function updateBalanceElements() {
+            const balanceAmount = document.getElementById('balance-amount');
+            const balanceCompact = document.getElementById('balance-compact');
+            const profileBalance = document.getElementById('profile-balance');
 
-            try {
-                const { data, error } = await supabase
-                    .from('transactions')
-                    .select('*')
-                    .eq('user_id', userId)
-                    .order('created_at', { ascending: false })
-                    .limit(10);
-
-                if (error) throw error;
-                transactions = data || [];
-            } catch (e) {
-                console.error('Error loading transactions:', e);
-                transactions = [];
-            }
+            if (balanceAmount) balanceAmount.textContent = balance;
+            if (balanceCompact) balanceCompact.textContent = balance;
+            if (profileBalance) profileBalance.textContent = `${balance} токенов`;
         }
 
         // Render experts
@@ -558,210 +699,151 @@
                 </div>
             `).join('');
 
-            // Re-attach click handlers after re-render
-            attachExpertHandlers();
-        }
-
-        // Attach expert card click handlers
-        function attachExpertHandlers() {
-            const container = document.getElementById('experts-list');
+            // Attach click handlers
             container.querySelectorAll('.expert-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const key = card.dataset.key;
                     activeExpert = key;
                     localStorage.setItem('activeExpert', key);
-                    renderExperts();
+                    tg.sendData(`expert:${key}`);
                 });
             });
         }
 
         // Render conversations
-        function renderConversations() {
+        async function renderConversations() {
             const container = document.getElementById('conversations-list');
-            
+            const conversations = await loadConversations();
+
             if (conversations.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">💬</div>
-                        <p>Пока нет диалогов</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-state">Начни разговор с любым экспертом выше</div>';
                 return;
             }
 
             container.innerHTML = conversations.map(conv => {
-                const expert = experts.find(e => e.key === conv.expert_key) || experts[0];
+                const expert = experts.find(e => e.key === conv.persona_key) || experts[0];
+                const messages = conv.messages || [];
+                const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+                const preview = lastMessage ? (lastMessage.content || 'Новый диалог') : 'Новый диалог';
+                
                 return `
-                    <div class="conversation-item">
+                    <div class="conversation-item" data-key="${expert.key}">
                         <div class="conversation-header">
                             <span class="conversation-emoji">${expert.emoji}</span>
+                            <span class="conversation-name">${expert.name}</span>
                             <span class="conversation-date">${formatDate(conv.updated_at)}</span>
                         </div>
-                        <div class="conversation-preview">${conv.title || 'Новый диалог'}</div>
+                        <div class="conversation-preview">${preview}</div>
                     </div>
                 `;
             }).join('');
-        }
 
-        // Render transactions
-        function renderTransactions() {
-            const container = document.getElementById('transactions-list');
-            
-            if (transactions.length === 0) {
-                container.innerHTML = `
-                    <tr>
-                        <td colspan="4" style="text-align: center; color: #8E8E93; padding: 20px;">
-                            Пока нет транзакций
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            container.innerHTML = transactions.map(tx => `
-                <tr>
-                    <td>
-                        <span class="transaction-type ${tx.amount > 0 ? 'plus' : 'minus'}">
-                            ${tx.amount > 0 ? '+' : ''}${tx.amount}
-                        </span>
-                    </td>
-                    <td>${tx.model || '—'}</td>
-                    <td>${tx.type || '—'}</td>
-                    <td>${formatDate(tx.created_at)}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Update home screen
-        function updateHomeScreen() {
-            // Greeting
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                document.getElementById('greeting').textContent = `Привет, ${user.first_name}! 👋`;
-            }
-
-            // Balance
-            const balanceEl = document.getElementById('balance-amount');
-            if (userData) {
-                balanceEl.textContent = userData.balance_tokens || 0;
-            } else {
-                balanceEl.textContent = '—';
-            }
-
-            // Render experts and conversations
-            renderExperts();
-            renderConversations();
-        }
-
-        // Update profile screen
-        function updateProfileScreen() {
-            const user = tg.initDataUnsafe?.user;
-            
-            // Avatar
-            const avatarEl = document.getElementById('profile-avatar');
-            if (user) {
-                avatarEl.textContent = user.first_name ? user.first_name[0].toUpperCase() : '?';
-            }
-
-            // Name
-            const nameEl = document.getElementById('profile-name');
-            if (user) {
-                nameEl.textContent = user.first_name || 'Пользователь';
-            }
-
-            // Balance
-            const balanceEl = document.getElementById('profile-balance');
-            if (userData) {
-                balanceEl.textContent = `${userData.balance_tokens || 0} токенов`;
-            } else {
-                balanceEl.textContent = '— токенов';
-            }
-
-            // Render transactions
-            renderTransactions();
+            // Attach click handlers
+            container.querySelectorAll('.conversation-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const key = item.dataset.key;
+                    tg.sendData(`open_expert:${key}`);
+                });
+            });
         }
 
         // Switch screen
         function switchScreen(screenName) {
-            currentScreen = screenName;
-            
-            // Update screens
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
             document.getElementById(`screen-${screenName}`).classList.add('active');
             
-            // Update nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.screen === screenName) {
                     item.classList.add('active');
                 }
             });
-
-            // Update screen content
-            if (screenName === 'home') {
-                updateHomeScreen();
-            } else if (screenName === 'profile') {
-                updateProfileScreen();
-            }
         }
 
-        // Show error screen
-        function showErrorScreen() {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById('screen-error').classList.add('active');
-            document.getElementById('bottom-nav').classList.add('hidden');
+        // Show toast
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
         }
 
         // Initialize app
         async function init() {
-            initTelegram();
             initSupabase();
 
-            // Render experts first (so DOM elements exist)
-            renderExperts();
+            // Set greeting
+            document.getElementById('greeting').textContent = `Привет, ${userName}! 👋`;
 
-            // Setup expert handlers (always, regardless of userId)
-            attachExpertHandlers();
+            // Set active model
+            document.getElementById('active-model').textContent = activeModel;
 
-            // Setup navigation (always, regardless of userId)
+            // Setup navigation
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', () => {
                     switchScreen(item.dataset.screen);
                 });
             });
 
-            // Setup topup button (always, regardless of userId)
+            // Setup topup buttons
             document.getElementById('btn-topup').addEventListener('click', () => {
-                // Open invoice - will be implemented when bot is ready
-                tg.showAlert('Функция пополнения будет доступна скоро');
+                tg.sendData('action:topup');
+            });
+            document.getElementById('btn-topup-profile').addEventListener('click', () => {
+                tg.sendData('action:topup');
+            });
+            document.getElementById('topup-link').addEventListener('click', () => {
+                tg.sendData('action:topup');
+            });
+
+            // Setup earn buttons
+            document.getElementById('btn-copy-ref').addEventListener('click', () => {
+                const refLink = `https://t.me/tmaTESTTEST_bot?start=ref_${userId}`;
+                navigator.clipboard.writeText(refLink).then(() => {
+                    showToast('Скопировано!');
+                });
+            });
+
+            document.getElementById('btn-subscribe').addEventListener('click', () => {
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot');
+            });
+
+            document.getElementById('btn-add-chat').addEventListener('click', () => {
+                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?startgroup=1');
+            });
+
+            // Setup clear history
+            document.getElementById('btn-clear-history').addEventListener('click', () => {
+                tg.sendData('action:clear_history');
             });
 
             // Check if opened in Telegram
             if (!userId) {
-                showErrorScreen();
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById('screen-error').classList.add('active');
+                document.getElementById('bottom-nav').classList.add('hidden');
                 return;
             }
 
             // Show skeletons
             showSkeleton(document.getElementById('balance-amount'), 'balance');
+            showSkeleton(document.getElementById('balance-compact'), 'text');
+            showSkeleton(document.getElementById('profile-balance'), 'text');
             showSkeleton(document.getElementById('conversations-list'), 'card');
-            showSkeleton(document.getElementById('profile-avatar'), 'avatar');
-            showSkeleton(document.getElementById('transactions-list'), 'text');
 
             // Load data
-            await Promise.all([
-                loadUserData(),
-                loadConversations(),
-                loadTransactions()
-            ]);
+            await loadUserData();
+            updateBalanceElements();
+            renderExperts();
+            await renderConversations();
 
-            // Update UI
-            updateHomeScreen();
-            updateProfileScreen();
+            // Set profile name
+            document.getElementById('profile-name').textContent = userName;
         }
 
         // Start
