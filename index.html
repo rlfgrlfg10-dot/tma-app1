@@ -1,878 +1,559 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Aggregator Bot</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, sans-serif;
-            background-color: #F2F2F7;
-            color: #000000;
-            min-height: 100vh;
-            padding-bottom: 70px;
-        }
-
-        .container {
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .card-dark {
-            background: #1C1C1E;
-            color: #FFFFFF;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            margin-top: 8px;
-        }
-
-        .greeting-text {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .greeting-subtitle {
-            font-size: 14px;
-            color: #8E8E93;
-        }
-
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .balance-label {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 16px;
-        }
-
-        .btn {
-            background: #007AFF;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn:active {
-            opacity: 0.7;
-        }
-
-        .btn-disabled {
-            background: #C7C7CC;
-            color: #8E8E93;
-        }
-
-        .experts-scroll {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .experts-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .expert-card {
-            background: #FFFFFF;
-            border-radius: 16px;
-            padding: 12px;
-            min-width: 100px;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: border-color 0.2s;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .expert-card.active {
-            border-color: #007AFF;
-        }
-
-        .expert-emoji {
-            font-size: 28px;
-            margin-bottom: 4px;
-        }
-
-        .expert-name {
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .conversation-item {
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-
-        .conversation-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .conversation-emoji {
-            font-size: 18px;
-        }
-
-        .conversation-name {
-            font-weight: 500;
-            font-size: 15px;
-        }
-
-        .conversation-date {
-            font-size: 12px;
-            color: #8E8E93;
-            margin-left: auto;
-        }
-
-        .conversation-preview {
-            font-size: 13px;
-            color: #8E8E93;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 32px 16px;
-            color: #8E8E93;
-            font-size: 14px;
-        }
-
-        .generation-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .generation-emoji {
-            font-size: 40px;
-            margin-bottom: 8px;
-        }
-
-        .generation-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .generation-subtitle {
-            font-size: 13px;
-            color: #8E8E93;
-            margin-bottom: 12px;
-        }
-
-        .balance-compact {
-            font-size: 14px;
-            color: #8E8E93;
-            margin-bottom: 16px;
-        }
-
-        .balance-compact span {
-            color: #000000;
-            font-weight: 600;
-        }
-
-        .balance-link {
-            color: #007AFF;
-            cursor: pointer;
-        }
-
-        .profile-name {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .profile-balance {
-            font-size: 15px;
-            color: #8E8E93;
-            margin-bottom: 12px;
-        }
-
-        .earn-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #E5E5EA;
-        }
-
-        .earn-row:last-child {
-            border-bottom: none;
-        }
-
-        .earn-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .earn-emoji {
-            font-size: 20px;
-        }
-
-        .earn-text {
-            font-size: 15px;
-        }
-
-        .earn-bonus {
-            font-size: 14px;
-            color: #34C759;
-            font-weight: 600;
-            margin-right: 8px;
-        }
-
-        .earn-btn {
-            background: #007AFF;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .earn-btn:active {
-            opacity: 0.7;
-        }
-
-        .setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid #E5E5EA;
-        }
-
-        .setting-row:last-child {
-            border-bottom: none;
-        }
-
-        .setting-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .setting-emoji {
-            font-size: 20px;
-        }
-
-        .setting-text {
-            font-size: 15px;
-        }
-
-        .setting-value {
-            font-size: 14px;
-            color: #8E8E93;
-        }
-
-        .setting-btn {
-            background: transparent;
-            color: #007AFF;
-            border: none;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .setting-btn:active {
-            opacity: 0.7;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #FFFFFF;
-            border-top: 1px solid #E5E5EA;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 0;
-            padding-bottom: max(8px, env(safe-area-inset-bottom));
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 8px 24px;
-            cursor: pointer;
-            color: #8E8E93;
-            transition: color 0.2s;
-        }
-
-        .nav-item.active {
-            color: #007AFF;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 11px;
-            font-weight: 500;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, #E5E5EA 25%, #F2F2F7 50%, #E5E5EA 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
-            border-radius: 8px;
-        }
-
-        @keyframes skeleton-loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .skeleton-text {
-            height: 16px;
-            width: 100px;
-            margin-bottom: 8px;
-        }
-
-        .skeleton-balance {
-            height: 36px;
-            width: 120px;
-            margin: 0 auto 8px;
-        }
-
-        .skeleton-card {
-            height: 60px;
-            margin-bottom: 8px;
-        }
-
-        .error-screen {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8E8E93;
-        }
-
-        .error-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 1000;
-            animation: fadeIn 0.3s, fadeOut 0.3s 1.7s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-
-        .warning-banner {
-            background: #FFD60A;
-            color: #000000;
-            padding: 12px 16px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>tmaTEST</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #F2F2F7;
+    --card: #FFFFFF;
+    --blue: #007AFF;
+    --dark: #1C1C1E;
+    --text: #000000;
+    --text2: #3C3C43;
+    --text3: #8E8E93;
+    --sep: #E5E5EA;
+    --red: #FF3B30;
+    --green: #34C759;
+    --orange: #FF9500;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 72px;
+  }
+
+  /* ── TABS ─────────────────────────────────── */
+  .screen { display: none; padding: 16px; }
+  .screen.active { display: block; }
+
+  /* ── BOTTOM NAV ───────────────────────────── */
+  .nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 72px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-top: 0.5px solid var(--sep);
+    display: flex;
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 10px; font-weight: 500;
+    padding-bottom: 8px;
+  }
+  .nav-btn.active { color: var(--blue); }
+  .nav-btn svg { width: 24px; height: 24px; }
+
+  /* ── CARDS ────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .card-dark {
+    background: var(--dark);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    padding: 20px;
+  }
+
+  /* ── GREETING ─────────────────────────────── */
+  .greeting { padding: 16px; }
+  .greeting h1 { font-size: 22px; font-weight: 700; margin-bottom: 2px; }
+  .greeting p { font-size: 14px; color: var(--text3); }
+
+  /* ── BALANCE ──────────────────────────────── */
+  .balance-label {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+  }
+  .balance-amount {
+    font-size: 42px; font-weight: 700; color: #fff;
+    letter-spacing: -1px; line-height: 1; margin-bottom: 4px;
+  }
+  .balance-sub { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+  .btn-fill {
+    display: block; width: 100%;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 600;
+    padding: 14px; cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-fill:active { opacity: 0.8; }
+
+  /* ── SECTION HEADER ───────────────────────── */
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 4px; margin-bottom: 10px;
+  }
+  .section-title { font-size: 18px; font-weight: 700; }
+  .section-link { font-size: 14px; color: var(--blue); }
+
+  /* ── EXPERTS ──────────────────────────────── */
+  .experts-scroll {
+    display: flex; gap: 10px;
+    overflow-x: auto; padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .experts-scroll::-webkit-scrollbar { display: none; }
+  .expert-card {
+    flex-shrink: 0; width: 80px;
+    background: var(--card);
+    border-radius: 14px;
+    padding: 12px 8px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .expert-card.active { border-color: var(--blue); }
+  .expert-card:active { opacity: 0.7; }
+  .expert-emoji { font-size: 26px; line-height: 1; }
+  .expert-name { font-size: 11px; font-weight: 500; color: var(--text2); text-align: center; }
+
+  /* ── DIALOGS ──────────────────────────────── */
+  .dialog-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 0.5px solid var(--sep);
+    cursor: pointer;
+  }
+  .dialog-item:last-child { border-bottom: none; }
+  .dialog-item:active { background: var(--bg); }
+  .dialog-emoji { font-size: 28px; flex-shrink: 0; }
+  .dialog-info { flex: 1; min-width: 0; }
+  .dialog-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .dialog-preview { font-size: 13px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dialog-time { font-size: 12px; color: var(--text3); flex-shrink: 0; }
+  .empty-state { padding: 24px 16px; text-align: center; color: var(--text3); font-size: 14px; }
+
+  /* ── GENERATION ───────────────────────────── */
+  .gen-balance-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--card); border-radius: 12px;
+    padding: 12px 16px; margin-bottom: 12px;
+  }
+  .gen-balance-left { font-size: 15px; color: var(--text2); }
+  .gen-balance-left span { font-weight: 600; color: var(--text); }
+  .btn-link { background: none; border: none; color: var(--blue); font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; }
+  .gen-card {
+    background: var(--card); border-radius: 16px;
+    padding: 20px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .gen-icon { font-size: 36px; }
+  .gen-info { flex: 1; }
+  .gen-info h3 { font-size: 16px; font-weight: 600; margin-bottom: 3px; }
+  .gen-info p { font-size: 13px; color: var(--text3); }
+  .btn-disabled {
+    background: var(--sep); color: var(--text3);
+    border: none; border-radius: 10px;
+    padding: 8px 14px; font-size: 14px; font-weight: 500;
+    cursor: default; font-family: inherit; white-space: nowrap;
+  }
+
+  /* ── PROFILE ──────────────────────────────── */
+  .list-card { background: var(--card); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
+  .list-item {
+    display: flex; align-items: center;
+    padding: 13px 16px;
+    border-bottom: 0.5px solid var(--sep);
+    cursor: pointer;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-item:active { background: var(--bg); }
+  .list-icon { font-size: 20px; margin-right: 12px; flex-shrink: 0; }
+  .list-text { flex: 1; font-size: 16px; }
+  .list-value { font-size: 15px; color: var(--text3); margin-right: 6px; }
+  .list-arrow { color: var(--text3); font-size: 14px; }
+
+  /* earn */
+  .earn-item {
+    display: flex; align-items: center;
+    padding: 13px 16px;
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .earn-item:last-child { border-bottom: none; }
+  .earn-info { flex: 1; }
+  .earn-info h4 { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+  .earn-info p { font-size: 13px; color: var(--text3); }
+  .earn-badge {
+    background: rgba(52,199,89,0.12); color: var(--green);
+    font-size: 13px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px; margin-right: 10px;
+    white-space: nowrap;
+  }
+  .btn-small {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 8px;
+    padding: 7px 12px; font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+  }
+  .btn-small:active { opacity: 0.8; }
+  .btn-small.copied { background: var(--green); }
+
+  /* skeleton */
+  .skel { background: linear-gradient(90deg, #E5E5EA 25%, #F2F2F7 50%, #E5E5EA 75%); background-size: 200% 100%; animation: skel 1.2s infinite; border-radius: 6px; }
+  @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.75); color: #fff;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 14px; z-index: 999;
+    opacity: 0; transition: opacity 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Warning Banner -->
-        <div id="warning-banner" class="warning-banner hidden">
-            ⚠️ Открой в мобильном Telegram для полного функционала
-        </div>
 
-        <!-- Screen: Agent -->
-        <div id="screen-agent" class="screen active">
-            <div class="card">
-                <div class="greeting-text" id="greeting">Привет! 👋</div>
-                <div class="greeting-subtitle">Чем могу помочь сегодня?</div>
-            </div>
+<!-- SCREEN 1: АГЕНТ -->
+<div id="screen-agent" class="screen active">
+  <div class="greeting">
+    <h1 id="greeting-name">Привет! 👋</h1>
+    <p>Чем могу помочь сегодня?</p>
+  </div>
 
-            <div class="card card-dark">
-                <div class="balance-amount" id="balance-amount">—</div>
-                <div class="balance-label">токенов на счёте</div>
-                <button class="btn" id="btn-topup">Пополнить</button>
-            </div>
-
-            <div class="section-title">Эксперты</div>
-            <div class="experts-scroll" id="experts-list">
-                <!-- Experts will be rendered here -->
-            </div>
-
-            <div class="section-title">Последние диалоги</div>
-            <div id="conversations-list">
-                <!-- Conversations will be rendered here -->
-            </div>
-        </div>
-
-        <!-- Screen: Generation -->
-        <div id="screen-generation" class="screen">
-            <div class="balance-compact">
-                <span id="balance-compact">—</span> токенов · <span class="balance-link" id="topup-link">Пополнить</span>
-            </div>
-
-            <div class="card generation-card">
-                <div class="generation-emoji">🖼</div>
-                <div class="generation-title">Создать фото</div>
-                <div class="generation-subtitle">Скоро · ~30 токенов</div>
-                <button class="btn btn-disabled">Недоступно</button>
-            </div>
-
-            <div class="card generation-card">
-                <div class="generation-emoji">🎬</div>
-                <div class="generation-title">Создать видео</div>
-                <div class="generation-subtitle">Скоро · ~150 токенов</div>
-                <button class="btn btn-disabled">Недоступно</button>
-            </div>
-        </div>
-
-        <!-- Screen: Profile -->
-        <div id="screen-profile" class="screen">
-            <div class="card">
-                <div class="profile-name" id="profile-name">—</div>
-                <div class="profile-balance" id="profile-balance">— токенов</div>
-                <button class="btn" id="btn-topup-profile">Пополнить</button>
-            </div>
-
-            <div class="card">
-                <div class="section-title" style="margin-top: 0;">Заработать токены</div>
-                <div class="earn-row">
-                    <div class="earn-left">
-                        <span class="earn-emoji">👥</span>
-                        <span class="earn-text">Пригласить друга</span>
-                    </div>
-                    <div>
-                        <span class="earn-bonus">+30 токенов</span>
-                        <button class="earn-btn" id="btn-copy-ref">Скопировать ссылку</button>
-                    </div>
-                </div>
-                <div class="earn-row">
-                    <div class="earn-left">
-                        <span class="earn-emoji">📢</span>
-                        <span class="earn-text">Подписаться на канал</span>
-                    </div>
-                    <div>
-                        <span class="earn-bonus">+30 токенов</span>
-                        <button class="earn-btn" id="btn-subscribe">Подписаться</button>
-                    </div>
-                </div>
-                <div class="earn-row">
-                    <div class="earn-left">
-                        <span class="earn-emoji">💬</span>
-                        <span class="earn-text">Добавить в чат</span>
-                    </div>
-                    <div>
-                        <span class="earn-bonus">+30 токенов</span>
-                        <button class="earn-btn" id="btn-add-chat">Добавить</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="section-title" style="margin-top: 0;">Настройки</div>
-                <div class="setting-row">
-                    <div class="setting-left">
-                        <span class="setting-emoji">🤖</span>
-                        <span class="setting-text">Активная модель</span>
-                    </div>
-                    <span class="setting-value" id="active-model">Llama (бесплатно)</span>
-                </div>
-                <div class="setting-row">
-                    <div class="setting-left">
-                        <span class="setting-emoji">🗑</span>
-                        <span class="setting-text">Очистить историю</span>
-                    </div>
-                    <button class="setting-btn" id="btn-clear-history">Очистить</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Error Screen -->
-        <div id="screen-error" class="screen">
-            <div class="error-screen">
-                <div class="error-icon">📱</div>
-                <p>Открой через Telegram бот @tmaTESTTEST_bot</p>
-            </div>
-        </div>
+  <div class="card-dark">
+    <div class="balance-label">МОЙ БАЛАНС</div>
+    <div class="balance-amount" id="balance-amount">
+      <span class="skel" style="width:80px;height:42px;display:inline-block"></span>
     </div>
+    <div class="balance-sub">токенов на счёте</div>
+    <button class="btn-fill" onclick="doTopup()">Пополнить</button>
+  </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav" id="bottom-nav">
-        <div class="nav-item active" data-screen="agent">
-            <div class="nav-icon">🤖</div>
-            <div class="nav-label">Агент</div>
-        </div>
-        <div class="nav-item" data-screen="generation">
-            <div class="nav-icon">✨</div>
-            <div class="nav-label">Генерация</div>
-        </div>
-        <div class="nav-item" data-screen="profile">
-            <div class="nav-icon">👤</div>
-            <div class="nav-label">Профиль</div>
-        </div>
+  <div style="margin-bottom:12px">
+    <div class="section-header">
+      <span class="section-title">Эксперты</span>
     </div>
+    <div class="experts-scroll" id="experts-list"></div>
+  </div>
 
-    <script>
-        // Configuration
-        const SUPABASE_URL = 'https://mjmucxrczoytxanossvz.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXVjeHJjem95dHhhbm9zc3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgyNTQ0NDIsImV4cCI6MjA5MzgzMDQ0Mn0.vCJnmibim2LPur6PJsJV3fF38IOiMpA-I7JWqCbes7E';
+  <div class="section-header">
+    <span class="section-title">Последние диалоги</span>
+  </div>
+  <div class="card" id="dialogs-list">
+    <div class="empty-state">Загрузка...</div>
+  </div>
+</div>
 
-        // Initialize
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-        const userId = tg.initDataUnsafe?.user?.id || tg.initData?.user?.id;
-        const userName = tg.initDataUnsafe?.user?.first_name || 'Привет';
-        let supabase = null;
-        let supabaseUserId = null;
-        let balance = 0;
+<!-- SCREEN 2: ГЕНЕРАЦИЯ -->
+<div id="screen-gen" class="screen">
+  <div class="gen-balance-bar">
+    <div class="gen-balance-left">Токены: <span id="gen-balance">—</span></div>
+    <button class="btn-link" onclick="doTopup()">Пополнить</button>
+  </div>
 
-        // Experts list
-        const experts = [
-            { key: 'default', emoji: '🦙', name: 'Лама' },
-            { key: 'marketer', emoji: '🎯', name: 'Маркетолог' },
-            { key: 'psychologist', emoji: '🧠', name: 'Психолог' },
-            { key: 'fitness', emoji: '💪', name: 'Фитнес' },
-            { key: 'editor', emoji: '✍️', name: 'Редактор' },
-            { key: 'programmer', emoji: '💻', name: 'Код' }
-        ];
+  <div class="gen-card">
+    <div class="gen-icon">🖼</div>
+    <div class="gen-info">
+      <h3>Создать фото</h3>
+      <p>~30 токенов за генерацию</p>
+    </div>
+    <button class="btn-disabled">Скоро</button>
+  </div>
 
-        // State
-        let activeExpert = localStorage.getItem('activeExpert') || 'default';
-        let activeModel = localStorage.getItem('activeModel') || 'Llama (бесплатно)';
+  <div class="gen-card">
+    <div class="gen-icon">🎬</div>
+    <div class="gen-info">
+      <h3>Создать видео</h3>
+      <p>~150 токенов за генерацию</p>
+    </div>
+    <button class="btn-disabled">Скоро</button>
+  </div>
 
-        // Initialize Supabase
-        function initSupabase() {
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            } catch (e) {
-                console.error('Supabase init error:', e);
-            }
-        }
+  <div style="text-align:center;padding:20px;color:var(--text3);font-size:14px;line-height:1.5">
+    Генерация изображений и видео<br>появится в следующем обновлении
+  </div>
+</div>
 
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diff = now - date;
-            
-            if (diff < 60000) return 'только что';
-            if (diff < 3600000) return `${Math.floor(diff / 60000)} мин назад`;
-            if (diff < 86400000) return `${Math.floor(diff / 3600000)} ч назад`;
-            if (diff < 604800000) return `${Math.floor(diff / 86400000)} дн назад`;
-            
-            return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-        }
+<!-- SCREEN 3: ПРОФИЛЬ -->
+<div id="screen-profile" class="screen">
+  <div class="card-dark" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;font-weight:700" id="avatar-letter">А</div>
+      <div>
+        <div style="font-size:18px;font-weight:600;color:#fff" id="profile-name">Загрузка...</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5)" id="profile-balance">— токенов</div>
+      </div>
+    </div>
+    <button class="btn-fill" onclick="doTopup()">Пополнить баланс</button>
+  </div>
 
-        // Show skeleton
-        function showSkeleton(element, type) {
-            if (type === 'balance') {
-                element.innerHTML = '<div class="skeleton skeleton-balance"></div>';
-            } else if (type === 'text') {
-                element.innerHTML = '<div class="skeleton skeleton-text"></div>';
-            } else if (type === 'card') {
-                element.innerHTML = '<div class="skeleton skeleton-card"></div>';
-            }
-        }
+  <div style="font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;padding:0 4px;margin-bottom:8px">
+    Заработать токены
+  </div>
+  <div class="list-card">
+    <div class="earn-item">
+      <div class="earn-info">
+        <h4>👥 Пригласить друга</h4>
+        <p>Реферальная ссылка</p>
+      </div>
+      <span class="earn-badge">+30</span>
+      <button class="btn-small" id="copy-btn" onclick="copyRef()">Копировать</button>
+    </div>
+    <div class="earn-item">
+      <div class="earn-info">
+        <h4>📢 Подписаться на канал</h4>
+        <p>Наш Telegram-канал</p>
+      </div>
+      <span class="earn-badge">+30</span>
+      <button class="btn-small" onclick="goChannel()">Подписаться</button>
+    </div>
+    <div class="earn-item">
+      <div class="earn-info">
+        <h4>💬 Добавить в чат</h4>
+        <p>Использовать вместе с друзьями</p>
+      </div>
+      <span class="earn-badge">+30</span>
+      <button class="btn-small" onclick="addToChat()">Добавить</button>
+    </div>
+  </div>
 
-        // Load user data
-        async function loadUserData() {
-            console.log('userId from tg:', userId);
-            console.log('initDataUnsafe:', tg.initDataUnsafe);
+  <div style="font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;padding:0 4px;margin-bottom:8px">
+    Настройки
+  </div>
+  <div class="list-card">
+    <div class="list-item" onclick="openBot('model')">
+      <span class="list-icon">🤖</span>
+      <span class="list-text">Активная модель</span>
+      <span class="list-value" id="active-model">Llama 3.3</span>
+      <span class="list-arrow">›</span>
+    </div>
+    <div class="list-item" onclick="openBot('clear')">
+      <span class="list-icon">🗑</span>
+      <span class="list-text" style="color:var(--red)">Очистить историю</span>
+      <span class="list-arrow">›</span>
+    </div>
+  </div>
+</div>
 
-            if (!supabase || !userId) {
-                console.log('userId is undefined, using test data');
-                balance = 79;
-                document.getElementById('warning-banner').classList.remove('hidden');
-                return;
-            }
+<!-- BOTTOM NAV -->
+<nav class="nav">
+  <button class="nav-btn active" id="nav-agent" onclick="switchTab('agent')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    Агент
+  </button>
+  <button class="nav-btn" id="nav-gen" onclick="switchTab('gen')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="3"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <path d="m21 15-5-5L5 21"/>
+    </svg>
+    Генерация
+  </button>
+  <button class="nav-btn" id="nav-profile" onclick="switchTab('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    Профиль
+  </button>
+</nav>
 
-            try {
-                const { data, error } = await supabase
-                    .from('users')
-                    .select('id, balance_tokens')
-                    .eq('telegram_id', userId)
-                    .single();
+<div class="toast" id="toast"></div>
 
-                if (error) throw error;
-                
-                if (data) {
-                    supabaseUserId = data.id;
-                    balance = data.balance_tokens || 0;
-                }
-            } catch (e) {
-                console.error('Error loading user:', e);
-                balance = 0;
-            }
-        }
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const BOT = 'tmaTESTTEST_bot'
+const CHANNEL = 'tmaTESTTEST_bot' // заменить на реальный канал
+const SUPABASE_URL = 'https://mjmucxrozoytxanossvz.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXVjeHJjem95dHhhbm9zc3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNTI5MzIsImV4cCI6MjA2MTkyODkzMn0.lIl6ibbr5CicrP72aU8-GcFUCVd2mKEUPSdK7HxJolM'
 
-        // Load conversations
-        async function loadConversations() {
-            if (!supabase || !supabaseUserId) return [];
+const EXPERTS = [
+  {key:'default',   emoji:'🦙', name:'Лама'},
+  {key:'marketer',  emoji:'🎯', name:'Маркетолог'},
+  {key:'psychologist', emoji:'🧠', name:'Психолог'},
+  {key:'fitness',   emoji:'💪', name:'Фитнес'},
+  {key:'editor',    emoji:'✍️', name:'Редактор'},
+  {key:'programmer',emoji:'💻', name:'Код'},
+]
 
-            try {
-                const { data, error } = await supabase
-                    .from('conversations')
-                    .select('persona_key, updated_at, messages')
-                    .eq('user_id', supabaseUserId)
-                    .order('updated_at', { ascending: false })
-                    .limit(5);
+// ── TELEGRAM ──────────────────────────────────────────────
+const tg = window.Telegram?.WebApp
+if (tg) { tg.ready(); tg.expand() }
 
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.error('Error loading conversations:', e);
-                return [];
-            }
-        }
+const tgUser = tg?.initDataUnsafe?.user
+const userId = tgUser?.id
+const firstName = tgUser?.first_name || 'Привет'
 
-        // Update balance elements
-        function updateBalanceElements() {
-            const balanceAmount = document.getElementById('balance-amount');
-            const balanceCompact = document.getElementById('balance-compact');
-            const profileBalance = document.getElementById('profile-balance');
+// ── STATE ─────────────────────────────────────────────────
+let balance = null
+let supabaseUserId = null
+let activeExpert = localStorage.getItem('activeExpert') || 'default'
 
-            if (balanceAmount) balanceAmount.textContent = balance;
-            if (balanceCompact) balanceCompact.textContent = balance;
-            if (profileBalance) profileBalance.textContent = `${balance} токенов`;
-        }
+// ── TAB SWITCHING ─────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'))
+  document.getElementById('screen-' + tab).classList.add('active')
+  document.getElementById('nav-' + tab).classList.add('active')
+}
 
-        // Render experts
-        function renderExperts() {
-            const container = document.getElementById('experts-list');
-            container.innerHTML = experts.map(expert => `
-                <div class="expert-card ${expert.key === activeExpert ? 'active' : ''}" data-key="${expert.key}">
-                    <div class="expert-emoji">${expert.emoji}</div>
-                    <div class="expert-name">${expert.name}</div>
-                </div>
-            `).join('');
+// ── SUPABASE FETCH ────────────────────────────────────────
+async function sbGet(table, params) {
+  const url = `${SUPABASE_URL}/rest/v1/${table}?${params}`
+  const r = await fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    }
+  })
+  if (!r.ok) return null
+  return r.json()
+}
 
-            // Attach click handlers
-            container.querySelectorAll('.expert-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const key = card.dataset.key;
-                    activeExpert = key;
-                    localStorage.setItem('activeExpert', key);
-                    tg.openTelegramLink(`https://t.me/tmaTESTTEST_bot?start=expert_${key}`);
-                });
-            });
-        }
+// ── LOAD DATA ─────────────────────────────────────────────
+async function loadData() {
+  // Greeting
+  document.getElementById('greeting-name').textContent = 'Привет, ' + firstName + '! 👋'
+  document.getElementById('profile-name').textContent = firstName
+  document.getElementById('avatar-letter').textContent = firstName[0]?.toUpperCase() || '?'
 
-        // Render conversations
-        async function renderConversations() {
-            const container = document.getElementById('conversations-list');
-            const conversations = await loadConversations();
+  if (!userId) {
+    document.getElementById('balance-amount').textContent = '—'
+    document.getElementById('profile-balance').textContent = 'Открой через мобильный Telegram'
+    return
+  }
 
-            if (conversations.length === 0) {
-                container.innerHTML = '<div class="empty-state">Начни разговор с любым экспертом выше</div>';
-                return;
-            }
+  try {
+    const users = await sbGet('users', `telegram_id=eq.${userId}&select=id,balance_tokens`)
+    if (users && users.length > 0) {
+      const user = users[0]
+      balance = user.balance_tokens
+      supabaseUserId = user.id
 
-            container.innerHTML = conversations.map(conv => {
-                const expert = experts.find(e => e.key === conv.persona_key) || experts[0];
-                const messages = conv.messages || [];
-                const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
-                const preview = lastMessage ? (lastMessage.content || 'Новый диалог') : 'Новый диалог';
-                
-                return `
-                    <div class="conversation-item" data-key="${expert.key}">
-                        <div class="conversation-header">
-                            <span class="conversation-emoji">${expert.emoji}</span>
-                            <span class="conversation-name">${expert.name}</span>
-                            <span class="conversation-date">${formatDate(conv.updated_at)}</span>
-                        </div>
-                        <div class="conversation-preview">${preview}</div>
-                    </div>
-                `;
-            }).join('');
+      document.getElementById('balance-amount').textContent = balance
+      document.getElementById('gen-balance').textContent = balance
+      document.getElementById('profile-balance').textContent = balance + ' токенов'
 
-            // Attach click handlers
-            container.querySelectorAll('.conversation-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const key = item.dataset.key;
-                    tg.openTelegramLink(`https://t.me/tmaTESTTEST_bot?start=expert_${key}`);
-                });
-            });
-        }
+      await loadDialogs(user.id)
+    }
+  } catch(e) {
+    document.getElementById('balance-amount').textContent = '?'
+  }
+}
 
-        // Switch screen
-        function switchScreen(screenName) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(`screen-${screenName}`).classList.add('active');
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.screen === screenName) {
-                    item.classList.add('active');
-                }
-            });
-        }
+async function loadDialogs(uid) {
+  const convs = await sbGet('conversations',
+    `user_id=eq.${uid}&order=updated_at.desc&limit=5`)
 
-        // Show toast
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
+  const el = document.getElementById('dialogs-list')
+  if (!convs || convs.length === 0) {
+    el.innerHTML = '<div class="empty-state">Начни разговор с любым экспертом выше</div>'
+    return
+  }
 
-        // Initialize app
-        async function init() {
-            initSupabase();
+  el.innerHTML = convs.map(c => {
+    const exp = EXPERTS.find(e => e.key === c.persona_key) || EXPERTS[0]
+    const msgs = c.messages || []
+    const last = msgs.filter(m => m.role === 'user').slice(-1)[0]
+    const preview = last ? last.content.substring(0, 40) + (last.content.length > 40 ? '…' : '') : 'Нет сообщений'
+    const date = new Date(c.updated_at).toLocaleDateString('ru', {day:'numeric', month:'short'})
+    return `<div class="dialog-item" onclick="openExpert('${exp.key}')">
+      <div class="dialog-emoji">${exp.emoji}</div>
+      <div class="dialog-info">
+        <div class="dialog-name">${exp.name}</div>
+        <div class="dialog-preview">${preview}</div>
+      </div>
+      <div class="dialog-time">${date}</div>
+    </div>`
+  }).join('')
+}
 
-            // Set greeting
-            document.getElementById('greeting').textContent = `Привет, ${userName}! 👋`;
+// ── RENDER EXPERTS ────────────────────────────────────────
+function renderExperts() {
+  const el = document.getElementById('experts-list')
+  el.innerHTML = EXPERTS.map(e => `
+    <div class="expert-card ${e.key === activeExpert ? 'active' : ''}"
+         onclick="selectExpert('${e.key}')">
+      <div class="expert-emoji">${e.emoji}</div>
+      <div class="expert-name">${e.name}</div>
+    </div>
+  `).join('')
+}
 
-            // Set active model
-            document.getElementById('active-model').textContent = activeModel;
+// ── ACTIONS ───────────────────────────────────────────────
+function selectExpert(key) {
+  activeExpert = key
+  localStorage.setItem('activeExpert', key)
+  renderExperts()
+  openBot('expert_' + key)
+}
 
-            // Setup navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    switchScreen(item.dataset.screen);
-                });
-            });
+function openExpert(key) {
+  openBot('expert_' + key)
+}
 
-            // Setup topup buttons
-            document.getElementById('btn-topup').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
-            });
-            document.getElementById('btn-topup-profile').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
-            });
-            document.getElementById('topup-link').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=topup');
-            });
+function openBot(param) {
+  tg?.openTelegramLink(`https://t.me/${BOT}?start=${param}`)
+}
 
-            // Setup earn buttons
-            document.getElementById('btn-copy-ref').addEventListener('click', () => {
-                const refLink = `https://t.me/tmaTESTTEST_bot?start=ref_${userId}`;
-                navigator.clipboard.writeText(refLink).then(() => {
-                    showToast('Скопировано!');
-                });
-            });
+function doTopup() {
+  openBot('topup')
+}
 
-            document.getElementById('btn-subscribe').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot');
-            });
+function copyRef() {
+  const link = `https://t.me/${BOT}?start=ref_${userId || '0'}`
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(link)
+      .then(() => showToast('Ссылка скопирована!'))
+      .catch(() => fallbackCopy(link))
+  } else {
+    fallbackCopy(link)
+  }
+  const btn = document.getElementById('copy-btn')
+  btn.textContent = 'Скопировано!'
+  btn.classList.add('copied')
+  setTimeout(() => { btn.textContent = 'Копировать'; btn.classList.remove('copied') }, 2000)
+}
 
-            document.getElementById('btn-add-chat').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?startgroup=1');
-            });
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea')
+  ta.value = text
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  showToast('Ссылка скопирована!')
+}
 
-            // Setup clear history
-            document.getElementById('btn-clear-history').addEventListener('click', () => {
-                tg.openTelegramLink('https://t.me/tmaTESTTEST_bot?start=clear');
-            });
+function goChannel() {
+  tg?.openTelegramLink(`https://t.me/${CHANNEL}`)
+}
 
-            // Render experts immediately (always, regardless of data loading)
-            renderExperts();
+function addToChat() {
+  tg?.openTelegramLink(`https://t.me/${BOT}?startgroup=1`)
+}
 
-            // Check if opened in Telegram
-            if (!userId) {
-                document.querySelectorAll('.screen').forEach(screen => {
-                    screen.classList.remove('active');
-                });
-                document.getElementById('screen-error').classList.add('active');
-                document.getElementById('bottom-nav').classList.add('hidden');
-                return;
-            }
+function showToast(msg) {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 2000)
+}
 
-            // Show skeletons
-            showSkeleton(document.getElementById('balance-amount'), 'balance');
-            showSkeleton(document.getElementById('balance-compact'), 'text');
-            showSkeleton(document.getElementById('profile-balance'), 'text');
-            showSkeleton(document.getElementById('conversations-list'), 'card');
-
-            // Load data
-            await loadUserData();
-            updateBalanceElements();
-            await renderConversations();
-
-            // Set profile name
-            document.getElementById('profile-name').textContent = userName;
-        }
-
-        // Start
-        init();
-    </script>
+// ── INIT ──────────────────────────────────────────────────
+renderExperts()
+loadData()
+</script>
 </body>
 </html>
