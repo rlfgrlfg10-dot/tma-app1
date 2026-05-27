@@ -3,445 +3,499 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>tmaTEST</title>
+<title>Mira</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    --bg: #0E0E12;
-    --bg2: #161619;
-    --card: #1C1C22;
-    --card2: #242429;
-    --blue: #5B9EFF;
-    --blue-dim: rgba(91,158,255,0.15);
-    --blue-glow: rgba(91,158,255,0.25);
-    --dark: #1C1C22;
-    --text: #FFFFFF;
-    --text2: rgba(255,255,255,0.7);
-    --text3: rgba(255,255,255,0.38);
-    --sep: rgba(255,255,255,0.07);
-    --red: #FF453A;
-    --green: #32D74B;
-    --orange: #FF9F0A;
-    --accent: #5B9EFF;
+    --blue-light: #5DADE2;
+    --blue-dark: #2C3E50;
+    --bg-dark: #0F1419;
+    --text-light: #FFFFFF;
+    --text-dim: rgba(255,255,255,0.5);
+    --sep: rgba(255,255,255,0.1);
+    --purple: #9C27B0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 80px;
-  }
-
-  /* ── TABS ─────────────────────────────────── */
-  .screen { display: none; padding: 16px; animation: fadeIn 0.2s ease; }
-  .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ── BOTTOM NAV ───────────────────────────── */
-  .nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    height: 80px;
-    background: rgba(14,14,18,0.92);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-top: 1px solid var(--sep);
-    display: flex;
-    z-index: 100;
-  }
-  .nav-btn {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 5px;
-    background: none; border: none; cursor: pointer;
-    color: var(--text3); font-size: 10px; font-weight: 500;
-    padding-bottom: 10px;
-    transition: color 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-    position: relative;
-  }
-  .nav-btn::after {
-    content: '';
-    position: absolute;
-    top: 6px; left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 32px; height: 32px;
-    border-radius: 10px;
-    background: var(--blue-dim);
-    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
-    opacity: 0;
-    z-index: -1;
-  }
-  .nav-btn.active::after { transform: translateX(-50%) scaleX(1); opacity: 1; }
-  .nav-btn.active { color: var(--blue); }
-  .nav-btn svg { width: 22px; height: 22px; transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1); }
-  .nav-btn:active svg { transform: scale(0.88); }
-  .nav-btn.active svg { filter: drop-shadow(0 0 6px var(--blue-glow)); }
-
-  /* ── BALANCE HEADER ───────────────────────── */
-  .balance-section {
-    background: linear-gradient(145deg, #1a2236 0%, #141820 100%);
-    border-radius: 20px;
-    padding: 22px;
-    border: 1px solid rgba(91,158,255,0.12);
-    position: relative;
+    background: var(--bg-dark);
+    color: var(--text-light);
     overflow: hidden;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
   }
-  .balance-section::before {
-    content: '';
-    position: absolute; top: -40px; right: -40px;
-    width: 140px; height: 140px;
-    background: radial-gradient(circle, rgba(91,158,255,0.18) 0%, transparent 70%);
-    pointer-events: none;
+
+  /* ── SCREENS ──────────────────────────────── */
+  .screen { display: none; width: 100%; height: 100%; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ── AGENT SCREEN ─────────────────────────── */
+  #screen-agent {
+    background: linear-gradient(180deg, #5DADE2 0%, #2C5AA0 30%, #1a1f2e 100%);
+    position: relative;
   }
-  .balance-label {
-    font-size: 11px; color: rgba(255,255,255,0.4);
-    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
-    font-weight: 600;
+
+  /* Top header bar */
+  .agent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    position: relative;
+    z-index: 10;
   }
-  .balance-amount {
-    font-size: 46px; font-weight: 800; color: #fff;
-    letter-spacing: -2px; line-height: 1; margin-bottom: 12px;
-  }
-  .balance-sub { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
-  .btn-fill {
-    display: block; width: 100%;
-    background: linear-gradient(135deg, #5B9EFF 0%, #3d7edd 100%);
-    color: #fff;
-    border: none; border-radius: 14px;
-    font-size: 16px; font-weight: 600;
-    padding: 15px; cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 4px 20px rgba(91,158,255,0.35);
-    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s ease, opacity 0.15s;
+
+  .btn-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--text-light);
+    transition: opacity 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .btn-fill:active {
-    transform: scale(0.96);
-    box-shadow: 0 2px 10px rgba(91,158,255,0.2);
-    opacity: 0.92;
-  }
+  .btn-circle:active { opacity: 0.7; }
 
-  /* ── SECTION HEADER ───────────────────────── */
-  .section-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 2px; margin-bottom: 12px;
-    margin-top: 12px;
+  .pro-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #9C27B0;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .section-title { font-size: 18px; font-weight: 700; letter-spacing: -0.2px; }
-  .section-link { font-size: 14px; color: var(--blue); font-weight: 500; }
+  .pro-button:active { opacity: 0.85; }
 
-  /* ── EXPERTS ──────────────────────────────── */
-  .experts-scroll {
-    display: flex; gap: 12px;
-    overflow-x: auto; padding-bottom: 4px;
+  .balance-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    color: var(--text-light);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
+    justify-content: center;
+  }
+  .balance-button:active { opacity: 0.7; }
+
+  /* Main content area */
+  .agent-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    overflow-y: auto;
     scrollbar-width: none;
   }
-  .experts-scroll::-webkit-scrollbar { display: none; }
-  .expert-card {
-    flex-shrink: 0; width: 76px;
-    background: var(--card);
-    border-radius: 16px;
-    padding: 12px 8px 10px;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 7px;
+  .agent-content::-webkit-scrollbar { display: none; }
+
+  .agent-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 28px;
+    line-height: 1.2;
+  }
+
+  /* Input area */
+  .input-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .chat-input {
+    width: 100%;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 14px 20px 14px 20px;
+    color: var(--text-light);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
+  .chat-input:focus { border-color: rgba(255,255,255,0.3); }
+
+  .send-button {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
     cursor: pointer;
-    border: 1.5px solid var(--sep);
-    transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 16px;
+    transition: background 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .expert-card.active {
-    border-color: var(--blue);
-    background: var(--blue-dim);
-  }
-  .expert-card:active { transform: scale(0.92); }
-  .expert-emoji { font-size: 28px; line-height: 1; }
-  .expert-name { font-size: 11px; font-weight: 500; color: var(--text2); text-align: center; line-height: 1.3; }
-  .expert-card.active .expert-name { color: var(--blue); font-weight: 600; }
+  .send-button:active { background: rgba(255,255,255,0.25); }
 
-  /* ── GALLERY GRID ────────────────────────── */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  /* Action buttons */
+  .action-buttons {
+    display: flex;
     gap: 10px;
-    margin-bottom: 16px;
-  }
-  .gallery-item {
-    position: relative;
     width: 100%;
-    padding-bottom: 100%;
-    border-radius: 16px;
+  }
+
+  .action-btn {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .action-btn:active { background: rgba(0,0,0,0.4); }
+
+  .chat-button {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chat-button:active { background: rgba(0,0,0,0.4); }
+
+  /* Gallery section - inside main screen */
+  .gallery-section {
+    width: 100%;
+    padding: 20px 0;
+    background: var(--bg-dark);
+    border-top: 1px solid var(--sep);
+  }
+
+  .gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    margin-bottom: 14px;
+  }
+
+  .gallery-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-light);
+  }
+
+  .gallery-link {
+    font-size: 14px;
+    color: #5DADE2;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .gallery-link:active { opacity: 0.7; }
+
+  .gallery-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 16px;
+    scrollbar-width: none;
+  }
+  .gallery-scroll::-webkit-scrollbar { display: none; }
+
+  .gallery-item {
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
+    border-radius: 20px;
+    background: #222;
+    position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    transition: transform 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
   .gallery-item:active { transform: scale(0.96); }
-  .gallery-item-inner {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
+
+  .gallery-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
-  .gallery-label {
+
+  .gallery-item-label {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: linear-gradient(to top, rgba(14,14,18,0.8), transparent);
-    backdrop-filter: blur(8px);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    backdrop-filter: blur(6px);
     padding: 12px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-light);
   }
-  .gallery-icon { font-size: 18px; }
 
-  /* ── DIALOGS ──────────────────────────────── */
-  .dialog-list-card {
-    background: var(--card);
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid var(--sep);
-    margin-bottom: 16px;
-  }
-  .dialog-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 13px 16px;
-    border-bottom: 1px solid var(--sep);
-    cursor: pointer;
-    transition: background 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .dialog-item:last-child { border-bottom: none; }
-  .dialog-item:active { background: rgba(255,255,255,0.04); }
-  .dialog-emoji {
-    font-size: 26px; flex-shrink: 0;
-    width: 44px; height: 44px;
-    background: var(--card2);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .dialog-info { flex: 1; min-width: 0; }
-  .dialog-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
-  .dialog-preview { font-size: 13px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dialog-time { font-size: 11px; color: var(--text3); flex-shrink: 0; }
-  .empty-state { padding: 28px 16px; text-align: center; color: var(--text3); font-size: 14px; line-height: 1.5; }
+  .gallery-icon { font-size: 14px; }
 
-  /* ── GENERATION CARDS ─────────────────────── */
-  .gen-balance-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    background: var(--card); border-radius: 14px;
-    padding: 13px 16px; margin-bottom: 14px;
-    border: 1px solid var(--sep);
+  /* Gen / Profile screens */
+  #screen-gen, #screen-profile {
+    background: var(--bg-dark);
+    overflow-y: auto;
+    padding: 16px;
   }
-  .gen-balance-left { font-size: 15px; color: var(--text2); }
-  .gen-balance-left span { font-weight: 700; color: var(--text); }
-  .btn-link {
-    background: none; border: none; color: var(--blue);
-    font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
-    padding: 6px 12px; border-radius: 10px;
-    background: var(--blue-dim);
-    transition: opacity 0.15s;
+
+  .screen-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-light);
   }
-  .btn-link:active { opacity: 0.7; }
+
   .gen-card {
-    background: var(--card); border-radius: 18px;
-    padding: 20px; margin-bottom: 12px;
-    display: flex; align-items: center; gap: 16px;
-    border: 1px solid var(--sep);
-    transition: border-color 0.2s;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
-  .gen-icon { font-size: 38px; flex-shrink: 0; }
+
+  .gen-icon { font-size: 32px; flex-shrink: 0; }
   .gen-info { flex: 1; }
-  .gen-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .gen-info p { font-size: 13px; color: var(--text3); }
+  .gen-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 3px; color: var(--text-light); }
+  .gen-info p { font-size: 13px; color: var(--text-dim); }
+
   .btn-disabled {
-    background: rgba(255,255,255,0.06); color: var(--text3);
-    border: 1px solid var(--sep); border-radius: 12px;
-    padding: 8px 14px; font-size: 13px; font-weight: 500;
-    cursor: default; font-family: inherit; white-space: nowrap;
+    background: rgba(255,255,255,0.1);
+    color: var(--text-dim);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: default;
+    white-space: nowrap;
   }
 
-  /* ── PROFILE ──────────────────────────────── */
-  .profile-header {
-    background: linear-gradient(145deg, #1a2236 0%, #141820 100%);
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid rgba(91,158,255,0.12);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 16px;
+  /* ── BOTTOM NAV ───────────────────────────– */
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background: rgba(15,20,25,0.9);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--sep);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
   }
-  .profile-header::before {
-    content: '';
-    position: absolute; top: -40px; right: -40px;
-    width: 140px; height: 140px;
-    background: radial-gradient(circle, rgba(91,158,255,0.18) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .profile-header-content {
-    display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
-  }
-  .profile-avatar {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--blue); display: flex;
-    align-items: center; justify-content: center;
-    font-size: 24px; color: #fff; font-weight: 700;
-    flex-shrink: 0;
-  }
-  .profile-info {
+
+  .nav-btn {
     flex: 1;
-  }
-  .profile-name { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 3px; }
-  .profile-balance { font-size: 14px; color: rgba(255,255,255,0.5); }
-
-  .list-card {
-    background: var(--card); border-radius: 18px;
-    margin-bottom: 12px; overflow: hidden;
-    border: 1px solid var(--sep);
-  }
-  .list-item {
-    display: flex; align-items: center;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--sep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: background 0.15s ease;
+    color: rgba(255,255,255,0.5);
+    font-size: 10px;
+    font-weight: 500;
+    padding: 8px 12px;
+    position: relative;
+    transition: color 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .list-item:last-child { border-bottom: none; }
-  .list-item:active { background: rgba(255,255,255,0.04); }
-  .list-icon { font-size: 20px; margin-right: 13px; flex-shrink: 0; }
-  .list-text { flex: 1; font-size: 16px; color: var(--text); }
-  .list-value { font-size: 14px; color: var(--text3); margin-right: 6px; }
-  .list-arrow { color: var(--text3); font-size: 18px; font-weight: 300; }
 
-  /* earn */
-  .earn-item {
-    display: flex; align-items: center;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--sep);
-    gap: 10px;
+  .nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    width: 46px;
+    height: 36px;
+    background: linear-gradient(90deg, #5DADE2, #4A9FD8);
+    border-radius: 18px;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    opacity: 0;
+    z-index: -1;
   }
-  .earn-item:last-child { border-bottom: none; }
-  .earn-info { flex: 1; min-width: 0; }
-  .earn-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
-  .earn-info p { font-size: 12px; color: var(--text3); }
-  .earn-badge {
-    background: rgba(50,215,75,0.12); color: var(--green);
-    font-size: 12px; font-weight: 700;
-    padding: 4px 10px; border-radius: 20px;
-    white-space: nowrap; flex-shrink: 0;
-    border: 1px solid rgba(50,215,75,0.2);
-  }
-  .btn-small {
-    background: linear-gradient(135deg, #5B9EFF 0%, #3d7edd 100%);
-    color: #fff;
-    border: none; border-radius: 10px;
-    padding: 8px 13px; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0;
-    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), opacity 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 2px 8px rgba(91,158,255,0.3);
-  }
-  .btn-small:active { transform: scale(0.93); opacity: 0.9; }
-  .btn-small.copied { background: linear-gradient(135deg, #32D74B 0%, #25a838 100%); box-shadow: 0 2px 8px rgba(50,215,75,0.3); }
 
-  /* skeleton */
-  .skel {
-    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
-    background-size: 200% 100%; animation: skel 1.4s infinite; border-radius: 8px;
+  .nav-btn.active::before {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
   }
-  @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-  /* toast */
+  .nav-btn svg {
+    width: 22px;
+    height: 22px;
+    transition: filter 0.2s;
+  }
+
+  .nav-btn.active {
+    color: var(--text-light);
+  }
+
+  .nav-btn.active svg {
+    filter: drop-shadow(0 0 6px rgba(93,173,226,0.4));
+  }
+
+  /* Toast */
   .toast {
-    position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%) translateY(8px);
-    background: rgba(28,28,34,0.95); color: #fff;
-    padding: 11px 22px; border-radius: 22px;
-    font-size: 14px; font-weight: 500; z-index: 999;
-    opacity: 0; transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(0,0,0,0.85);
+    color: var(--text-light);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
     white-space: nowrap;
     border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
   }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 
-  /* section label above list */
-  .section-label {
-    font-size: 12px; font-weight: 700; color: var(--text3);
-    text-transform: uppercase; letter-spacing: 0.07em;
-    padding: 0 4px; margin-bottom: 8px;
-    margin-top: 8px;
+  /* Skeleton */
+  .skel {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: skel 1.4s infinite;
+    border-radius: 6px;
   }
+  @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 </style>
 </head>
 <body>
 
 <!-- SCREEN 1: АГЕНТ -->
 <div id="screen-agent" class="screen active">
-  <!-- Balance Section -->
-  <div class="balance-section">
-    <div class="balance-label">МОЙ БАЛАНС</div>
-    <div class="balance-amount" id="balance-amount">
-      <span class="skel" style="width:80px;height:42px;display:inline-block"></span>
-    </div>
-    <div class="balance-sub">токенов на счёте</div>
-    <button class="btn-fill" onclick="doTopup()">Пополнить</button>
+  <div class="agent-header">
+    <button class="btn-circle" onclick="openBot('profile')" title="Profile">👤</button>
+    <button class="pro-button" onclick="doTopup()">⚡ Купить Mira Pro</button>
+    <button class="balance-button" id="balance-btn">
+      <span>💰</span>
+      <span id="balance-display">0</span>
+    </button>
   </div>
 
-  <!-- Experts Section -->
-  <div>
-    <div class="section-header">
-      <span class="section-title">Эксперты</span>
-    </div>
-    <div class="experts-scroll" id="experts-list"></div>
-  </div>
+  <div class="agent-content">
+    <div class="agent-title">Чем я могу помочь Вам сегодня?</div>
 
-  <!-- Gallery Section -->
-  <div class="section-header">
-    <span class="section-title">Фото и видео</span>
-    <span class="section-link">Показать все</span>
-  </div>
-  <div class="gallery-grid">
-    <div class="gallery-item" onclick="openBot('gen_image')">
-      <div class="gallery-item-inner" style="background-image: url('https://images.pexels.com/photos/355328/pexels-photo-355328.jpeg?auto=compress&cs=tinysrgb&w=600');">
-        <div class="gallery-label">
-          <div class="gallery-icon">🖼</div>
-          <div>Генерация</div>
-        </div>
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea class="chat-input" placeholder="Спросить что-нибудь..." rows="1"></textarea>
+        <button class="send-button" onclick="sendMessage()">↑</button>
       </div>
-    </div>
-    <div class="gallery-item" onclick="openBot('profile')">
-      <div class="gallery-item-inner" style="background-image: url('https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600');">
-        <div class="gallery-label">
-          <div class="gallery-icon">👤</div>
-          <div>Профиль</div>
-        </div>
+
+      <div class="action-buttons">
+        <button class="action-btn" onclick="openBot('gen_photo')">🖼 Создать фото</button>
+        <button class="action-btn" onclick="openBot('gen_video')">▶ Создать видео</button>
       </div>
+
+      <button class="chat-button" onclick="openBot('add_chat')">💬 Добавить в чат</button>
     </div>
   </div>
 
-  <!-- Dialogs Section -->
-  <div class="section-header">
-    <span class="section-title">Последние диалоги</span>
-  </div>
-  <div class="dialog-list-card" id="dialogs-list">
-    <div class="empty-state">Загрузка...</div>
+  <div class="gallery-section">
+    <div class="gallery-header">
+      <span class="gallery-title">Фото и видео</span>
+      <button class="gallery-link" onclick="openBot('gallery')">Показать все</button>
+    </div>
+    <div class="gallery-scroll" id="gallery-list"></div>
   </div>
 </div>
 
 <!-- SCREEN 2: ГЕНЕРАЦИЯ -->
 <div id="screen-gen" class="screen">
-  <div class="gen-balance-bar">
-    <div class="gen-balance-left">Токены: <span id="gen-balance">—</span></div>
-    <button class="btn-link" onclick="doTopup()">Пополнить</button>
-  </div>
+  <div class="screen-title">Генерация</div>
 
   <div class="gen-card">
     <div class="gen-icon">🖼</div>
@@ -460,67 +514,12 @@
     </div>
     <button class="btn-disabled">Скоро</button>
   </div>
-
-  <div style="text-align:center;padding:24px 16px;color:var(--text3);font-size:14px;line-height:1.6;background:var(--card);border-radius:18px;border:1px solid var(--sep);">
-    Генерация изображений и видео<br>появится в следующем обновлении
-  </div>
 </div>
 
 <!-- SCREEN 3: ПРОФИЛЬ -->
 <div id="screen-profile" class="screen">
-  <div class="profile-header">
-    <div class="profile-header-content">
-      <div class="profile-avatar" id="avatar-letter">А</div>
-      <div class="profile-info">
-        <div class="profile-name" id="profile-name">Загрузка...</div>
-        <div class="profile-balance" id="profile-balance">— токенов</div>
-      </div>
-    </div>
-    <button class="btn-fill" onclick="doTopup()">Пополнить баланс</button>
-  </div>
-
-  <div class="section-label">Заработать токены</div>
-  <div class="list-card">
-    <div class="earn-item">
-      <div class="earn-info">
-        <h4>👥 Пригласить друга</h4>
-        <p>Реферальная ссылка</p>
-      </div>
-      <span class="earn-badge">+30</span>
-      <button class="btn-small" id="copy-btn" onclick="copyRef()">Копировать</button>
-    </div>
-    <div class="earn-item">
-      <div class="earn-info">
-        <h4>📢 Подписаться на канал</h4>
-        <p>Наш Telegram-канал</p>
-      </div>
-      <span class="earn-badge">+30</span>
-      <button class="btn-small" onclick="goChannel()">Подписаться</button>
-    </div>
-    <div class="earn-item">
-      <div class="earn-info">
-        <h4>💬 Добавить в чат</h4>
-        <p>Использовать вместе с друзьями</p>
-      </div>
-      <span class="earn-badge">+30</span>
-      <button class="btn-small" onclick="addToChat()">Добавить</button>
-    </div>
-  </div>
-
-  <div class="section-label">Настройки</div>
-  <div class="list-card">
-    <div class="list-item" onclick="openBot('model')">
-      <span class="list-icon">🤖</span>
-      <span class="list-text">Активная модель</span>
-      <span class="list-value" id="active-model">Llama 3.3</span>
-      <span class="list-arrow">›</span>
-    </div>
-    <div class="list-item" onclick="openBot('clear')">
-      <span class="list-icon">🗑</span>
-      <span class="list-text" style="color:var(--red)">Очистить историю</span>
-      <span class="list-arrow">›</span>
-    </div>
-  </div>
+  <div class="screen-title">Профиль</div>
+  <p style="color: var(--text-dim); font-size: 14px;">Ваш профиль</p>
 </div>
 
 <!-- BOTTOM NAV -->
@@ -552,17 +551,14 @@
 <script>
 // ── CONFIG ────────────────────────────────────────────────
 const BOT = 'tmaTESTTEST_bot'
-const CHANNEL = 'tmaTESTTEST_bot' // заменить на реальный канал
+const CHANNEL = 'tmaTESTTEST_bot'
 const SUPABASE_URL = 'https://mjmucxrozoytxanossvz.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbXVjeHJjem95dHhhbm9zc3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNTI5MzIsImV4cCI6MjA2MTkyODkzMn0.lIl6ibbr5CicrP72aU8-GcFUCVd2mKEUPSdK7HxJolM'
 
-const EXPERTS = [
-  {key:'default',   emoji:'🦙', name:'Лама'},
-  {key:'marketer',  emoji:'🎯', name:'Маркетолог'},
-  {key:'psychologist', emoji:'🧠', name:'Психолог'},
-  {key:'fitness',   emoji:'💪', name:'Фитнес'},
-  {key:'editor',    emoji:'✍️', name:'Редактор'},
-  {key:'programmer',emoji:'💻', name:'Код'},
+const GALLERY_ITEMS = [
+  { icon: '⚡', label: 'Агент' },
+  { icon: '✨', label: 'Генерация' },
+  { icon: '👤', label: 'Профиль' },
 ]
 
 // ── TELEGRAM ──────────────────────────────────────────────
@@ -571,12 +567,11 @@ if (tg) { tg.ready(); tg.expand() }
 
 const tgUser = tg?.initDataUnsafe?.user
 const userId = tgUser?.id
-const firstName = tgUser?.first_name || 'Привет'
+const firstName = tgUser?.first_name || 'Пользователь'
 
 // ── STATE ─────────────────────────────────────────────────
-let balance = null
+let balance = 0
 let supabaseUserId = null
-let activeExpert = localStorage.getItem('activeExpert') || 'default'
 
 // ── TAB SWITCHING ─────────────────────────────────────────
 function switchTab(tab) {
@@ -601,13 +596,8 @@ async function sbGet(table, params) {
 
 // ── LOAD DATA ─────────────────────────────────────────────
 async function loadData() {
-  // Greeting
-  document.getElementById('profile-name').textContent = firstName
-  document.getElementById('avatar-letter').textContent = firstName[0]?.toUpperCase() || '?'
-
   if (!userId) {
-    document.getElementById('balance-amount').textContent = '—'
-    document.getElementById('profile-balance').textContent = 'Открой через мобильный Telegram'
+    document.getElementById('balance-display').textContent = '—'
     return
   }
 
@@ -617,67 +607,30 @@ async function loadData() {
       const user = users[0]
       balance = user.balance_tokens
       supabaseUserId = user.id
-
-      document.getElementById('balance-amount').textContent = balance
-      document.getElementById('gen-balance').textContent = balance
-      document.getElementById('profile-balance').textContent = balance + ' токенов'
-
-      await loadDialogs(user.id)
+      document.getElementById('balance-display').textContent = balance
     }
   } catch(e) {
-    document.getElementById('balance-amount').textContent = '?'
+    console.error('Error loading data:', e)
   }
+
+  renderGallery()
 }
 
-async function loadDialogs(uid) {
-  const convs = await sbGet('conversations',
-    `user_id=eq.${uid}&order=updated_at.desc&limit=5`)
-
-  const el = document.getElementById('dialogs-list')
-  if (!convs || convs.length === 0) {
-    el.innerHTML = '<div class="empty-state">Начни разговор с любым экспертом выше</div>'
-    return
-  }
-
-  el.innerHTML = convs.map(c => {
-    const exp = EXPERTS.find(e => e.key === c.persona_key) || EXPERTS[0]
-    const msgs = c.messages || []
-    const last = msgs.filter(m => m.role === 'user').slice(-1)[0]
-    const preview = last ? last.content.substring(0, 40) + (last.content.length > 40 ? '…' : '') : 'Нет сообщений'
-    const date = new Date(c.updated_at).toLocaleDateString('ru', {day:'numeric', month:'short'})
-    return `<div class="dialog-item" onclick="openExpert('${exp.key}')">
-      <div class="dialog-emoji">${exp.emoji}</div>
-      <div class="dialog-info">
-        <div class="dialog-name">${exp.name}</div>
-        <div class="dialog-preview">${preview}</div>
+function renderGallery() {
+  const el = document.getElementById('gallery-list')
+  el.innerHTML = GALLERY_ITEMS.map(item => `
+    <div class="gallery-item">
+      <div class="gallery-item-img" style="display:flex;align-items:center;justify-content:center;background:#222;font-size:32px;">
+        ${item.icon}
       </div>
-      <div class="dialog-time">${date}</div>
-    </div>`
-  }).join('')
-}
-
-// ── RENDER EXPERTS ────────────────────────────────────────
-function renderExperts() {
-  const el = document.getElementById('experts-list')
-  el.innerHTML = EXPERTS.map(e => `
-    <div class="expert-card ${e.key === activeExpert ? 'active' : ''}"
-         onclick="selectExpert('${e.key}')">
-      <div class="expert-emoji">${e.emoji}</div>
-      <div class="expert-name">${e.name}</div>
+      <div class="gallery-item-label">${item.label}</div>
     </div>
   `).join('')
 }
 
 // ── ACTIONS ───────────────────────────────────────────────
-function selectExpert(key) {
-  activeExpert = key
-  localStorage.setItem('activeExpert', key)
-  renderExperts()
-  openBot('expert_' + key)
-}
-
-function openExpert(key) {
-  openBot('expert_' + key)
+function sendMessage() {
+  showToast('Сообщение отправлено')
 }
 
 function openBot(param) {
@@ -688,39 +641,6 @@ function doTopup() {
   openBot('topup')
 }
 
-function copyRef() {
-  const link = `https://t.me/${BOT}?start=ref_${userId || '0'}`
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(link)
-      .then(() => showToast('Ссылка скопирована!'))
-      .catch(() => fallbackCopy(link))
-  } else {
-    fallbackCopy(link)
-  }
-  const btn = document.getElementById('copy-btn')
-  btn.textContent = 'Скопировано!'
-  btn.classList.add('copied')
-  setTimeout(() => { btn.textContent = 'Копировать'; btn.classList.remove('copied') }, 2000)
-}
-
-function fallbackCopy(text) {
-  const ta = document.createElement('textarea')
-  ta.value = text
-  document.body.appendChild(ta)
-  ta.select()
-  document.execCommand('copy')
-  document.body.removeChild(ta)
-  showToast('Ссылка скопирована!')
-}
-
-function goChannel() {
-  tg?.openTelegramLink(`https://t.me/${CHANNEL}`)
-}
-
-function addToChat() {
-  tg?.openTelegramLink(`https://t.me/${BOT}?startgroup=1`)
-}
-
 function showToast(msg) {
   const t = document.getElementById('toast')
   t.textContent = msg
@@ -729,7 +649,6 @@ function showToast(msg) {
 }
 
 // ── INIT ──────────────────────────────────────────────────
-renderExperts()
 loadData()
 </script>
 </body>
