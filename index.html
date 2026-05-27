@@ -26,11 +26,14 @@
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
-    background: var(--bg-dark);
+    background: radial-gradient(circle at top, #1e40af 0%, #0f172a 60%, #020617 100%) !important;
     color: var(--text-light);
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   /* ── SCREENS ──────────────────────────────── */
@@ -39,10 +42,8 @@
 
   /* ── AGENT SCREEN ─────────────────────────── */
   #screen-agent {
-    background: radial-gradient(ellipse 600px 400px at 50% 0%, #2563eb 0%, #1e40af 20%, #0f172a 70%, #0f172a 100%);
     position: relative;
-    min-height: 100vh;
-    overflow-y: auto;
+    width: 100%;
   }
 
   /* Top header bar */
@@ -241,7 +242,7 @@
   /* Gallery section - inside main screen */
   .gallery-section {
     width: 100%;
-    padding: 20px 0;
+    padding: 24px 0;
     background: var(--bg-dark);
     border-top: 1px solid var(--sep);
   }
@@ -376,7 +377,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 100;
+    z-index: 50;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
